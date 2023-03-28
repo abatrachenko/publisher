@@ -31,10 +31,10 @@ pip install requests
 
 3. Set up the environment variables for OpenAI API key and WordPress credentials:
 
-OPENAI_API_KEY="your_openai_api_key"
-WP_USERNAME="your_wordpress_username"
-WP_PASSWORD="your_wordpress_password"
-WP_URL="your_wordpress_site_url"
+- OPENAI_API_KEY="your_openai_api_key"
+- WP_USERNAME="your_wordpress_username"
+- WP_PASSWORD="your_wordpress_password"
+- WP_URL="your_wordpress_site_url"
 
 
 ## Usage
