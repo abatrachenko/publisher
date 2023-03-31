@@ -1,4 +1,3 @@
-import json
 from chatgpt_api import generate_text
 from image_generation import generate_image
 from wordpress_publisher import publish_post
