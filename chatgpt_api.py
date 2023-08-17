@@ -7,7 +7,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 import openai
 
-def generate_text(prompt, max_tokens=500):
+def generate_text(prompt, max_tokens=650):
     response = openai.ChatCompletion.create(
         model="gpt-4",
         messages=[
