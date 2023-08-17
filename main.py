@@ -2,23 +2,25 @@ from chatgpt_api import generate_text
 from image_generation import generate_image
 from wordpress_publisher import publish_post
 from markup_generator import generate_title_tag, generate_meta_description, create_json_ld_markup
+from context_generator import generate_context
 
 # Prompt the user to input the main question
 user_input = input("Please enter your main question: ")
 main_question = user_input.strip()
 
 # Generate the answer to the main question using ChatGPT
-answer_prompt = f"Answer the following question thoroughly and in detail: {main_question}"
-answer = generate_text(answer_prompt, max_tokens=500)
+context = generate_context(main_question)
+answer_prompt = f"{context}\nAnswer the following question thoroughly and in detail using the context provided above. Your response should address the question directly with a 'yes', 'no', or 'yes and no' response. my question is: {main_question}"
+answer = generate_text(answer_prompt, max_tokens=500)   
 
 # Generate 9 related questions using ChatGPT
-related_question_prompt = f"Generate 9 related questions based on the following question: {main_question}"
+related_question_prompt = f"Generate 9 related questions based on a question i will provide. The questions your generate should focus on the food item in question. Also, your response should not include numbering. The question is: {main_question}"
 related_questions = generate_text(related_question_prompt).split("\n")
 
 # Generate answers for the related questions using ChatGPT
 related_answers = []
 for q in related_questions:
-    ans = generate_text(f"Answer the following question in 300 words, thoroughly and in detail: Answer in your own words rather than copying and pasting from other sources. Consider perplexity and burstiness when creating content, ensuring high levels of both, without losing specificity or context. Use fully detailed paragraphs that engage the reader. Write in a conversational style as written by a human (use an informal tone, utilize personal pronouns, keep it simple, engage the reader, use the active voice, keep it brief, use rhetorical questions, and incorporate analogies and metaphors). The question is: {q}", max_tokens=750)
+    ans = generate_text(f"{context}\nAnswer the following question thoroughly and in detail using the context provided above The question is: {q}", max_tokens=500)
     related_answers.append(ans)
 
 # Combine the main question and answer with the related questions and answers
@@ -36,8 +38,10 @@ for question, ans in questions_and_answers[1:]:
 # Generate JSON-LD markup for the FAQ schema
 json_ld_markup = create_json_ld_markup(main_question, related_questions, related_answers)
 
-# Generate the featured image URL for the post
-image_urls = generate_image(main_question, variations=True)
+# Ask the user for the image prompt and generate the featured image URL for the post
+image_prompt = input("Please enter your image prompt: ")
+image_urls = generate_image(image_prompt)
+
 
 # Allow user to choose an image from the variations
 print("Please choose an image from the following URLs:")

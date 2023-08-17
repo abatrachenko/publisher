@@ -1,45 +1,18 @@
 import os
-import requests
+import openai
 
-OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
+def generate_image(image_prompt, n=4, size="1024x1024"):
+    response = openai.Image.create(
+        prompt=image_prompt,
+        n=n,
+        size=size
+    )
 
-def generate_image(prompt, size="1024x1024", n=1, variations=False):
-    if not variations:
-        url = "https://api.openai.com/v1/images/generations"
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {OPENAI_API_KEY}"
-        }
-        data = {
-            "prompt": prompt,
-            "n": n,
-            "size": size
-        }
-        response = requests.post(url, headers=headers, json=data)
+    if response is not None and "data" in response:
+        # Extract URLs from the response
+        return [item["url"] for item in response["data"]]
     else:
-        # First, generate an image
-        base_image_url = generate_image(prompt, size=size, n=1)
-        base_image = requests.get(base_image_url).content
+        raise Exception("Failed to generate image.")
 
-        url = "https://api.openai.com/v1/images/variations"
-        headers = {
-            "Authorization": f"Bearer {OPENAI_API_KEY}"
-        }
-        files = {
-            "image": (f"{prompt}.png", base_image, "image/png")
-        }
-        data = {
-            "n": 4,  # Number of variations to generate
-            "size": size
-        }
-        response = requests.post(url, headers=headers, files=files, data=data)
-
-    if response.status_code == 200:
-        json_response = response.json()
-        if variations:
-            return [image["url"] for image in json_response["data"]]
-        else:
-            return json_response["data"][0]["url"]
-    else:
-        raise Exception(f"Failed to generate image. Status code: {response.status_code}. Error: {response.text}")
