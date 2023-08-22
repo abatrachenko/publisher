@@ -31,7 +31,7 @@ def get_summary(url):
     encoded_url = requests.utils.quote(url, safe='')
     
     # Construct the API URL with the provided parameters.
-    smmry_url = f"http://api.smmry.com/?SM_API_KEY=198C35D20D&SM_QUOTE_AVOID&SM_QUESTION_AVOID&SM_EXCLAMATION_AVOID&SM_LENGTH=15&SM_URL={encoded_url}"
+    smmry_url = f"http://api.smmry.com/?SM_API_KEY=198C35D20D&SM_LENGTH=25&SM_URL={encoded_url}"
 
     # Make the GET request to the smmry API.
     response = requests.get(smmry_url)

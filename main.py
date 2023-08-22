@@ -10,8 +10,8 @@ main_question = user_input.strip()
 
 # Generate the answer to the main question using ChatGPT
 context_main = generate_context(main_question)
-answer_prompt = f"{context_main}\nAnswer the following question thoroughly and in detail using the context provided above. Your response should address the question directly starting with a 'yes', 'no', or 'yes and no' response, but do not make any mention of the context in your answer. If the context provided is not relevant to the question, use your own knowledge. The question is: {main_question}"
-answer = generate_text(answer_prompt, max_tokens=650)
+answer_prompt = f"{context_main}\nAnswer the following question thoroughly and in detail using the context provided above. Your response should address the question directly starting with a 'yes', 'no', or 'yes and no' response. Do not make any mention of the context in your answer. If the context provided is not relevant to the question, use your own knowledge. Do not make any reference to the context in your response. The question is: {main_question}"
+answer = generate_text(answer_prompt, max_tokens=750)
 
 # Generate 9 related questions using ChatGPT
 related_question_prompt = f"Generate 9 related questions based on a question i will provide. The questions you generate should focus on the food item in question. Also, your response should not include numbering. The question is: {main_question}"
@@ -21,20 +21,20 @@ related_questions = generate_text(related_question_prompt).split("\n")
 related_answers = []
 for q in related_questions:
     context_related = generate_context(q)  # Generating context for each related question
-    ans = generate_text(f"{context_related}\nAnswer the following question thoroughly and in detail using the context provided above, but do not make any mention of the context in your answer. If the context provided is not relevant to the question, use your own knowledge. Also, answer the question directly, while making no mention that context was provided. The question is: {q}", max_tokens=650)
+    ans = generate_text(f"{context_related}\nAnswer the following question thoroughly and in detail using the context provided. Your response should address the question directly. Do not mention the context provided in this in your answer. If the context provided is not relevant to the question, use your own knowledge. Do not make any reference to the context in your response. The question is: {q}", max_tokens=750)
     related_answers.append(ans)
 
 # Combine the main question and answer with the related questions and answers
-questions_and_answers = [(main_question, answer)] + list(zip(related_questions, related_answers))
+questions_and_answers = list(zip(related_questions, related_answers))
 
 # Generate the post title and meta description
 post_title = generate_title_tag(main_question)
-meta_description = generate_meta_description(main_question, related_questions)
+meta_description = generate_meta_description(answer, related_questions)
 
 # Generate the HTML output for the post content
 html_output = f"<h1>{post_title}</h1>\n<p>{answer}</p>"
-for question, ans in questions_and_answers[1:]:
-    html_output += f"\n\n<h2>{question}</h2>\n<p>{ans}</p>"
+for question, ans in questions_and_answers:
+    html_output += f"<br><br><h2>{question}</h2><br><p>{ans}</p>"
 
 # Generate JSON-LD markup for the FAQ schema
 json_ld_markup = create_json_ld_markup(main_question, related_questions, related_answers)
