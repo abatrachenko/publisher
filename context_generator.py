@@ -6,7 +6,7 @@ import time
 GOOGLE_SEARCH_API_KEY = os.environ.get("GOOGLE_SEARCH_API_KEY")
 SEARCH_ENGINE_ID = os.environ.get("SEARCH_ENGINE_ID")
 
-def get_search_results(query, num_results=2):
+def get_search_results(query, num_results=4):
     url = "https://www.googleapis.com/customsearch/v1"
     params = {
         "key": GOOGLE_SEARCH_API_KEY,
@@ -25,7 +25,7 @@ def get_search_results(query, num_results=2):
 
 def get_summary(url):
     # Introduce a delay before making the request to adhere to the API's rate limit.
-    time.sleep(12)  # wait for 12 seconds
+    # time.sleep(12)  # wait for 12 seconds
 
     # Encode the URL to ensure it's correctly formatted for the API.
     encoded_url = requests.utils.quote(url, safe='')

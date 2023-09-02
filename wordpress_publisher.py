@@ -6,7 +6,7 @@ WP_API_BASE_URL = os.environ.get("WP_API_BASE_URL")
 USERNAME = os.environ.get("WP_USERNAME")
 APP_PASSWORD = os.environ.get("WP_APP_PASSWORD")
 
-def publish_post(title, content, json_ld_markup, featured_image_url=None):
+def publish_post(title, content, json_ld_markup, featured_image_url=None, categories=[]):
     url = f"{WP_API_BASE_URL}/wp-json/wp/v2/posts"
     headers = {
         "Content-Type": "application/json",
@@ -15,7 +15,8 @@ def publish_post(title, content, json_ld_markup, featured_image_url=None):
     data = {
         "title": title,
         "content": content + f'\n\n<script type="application/ld+json">{json_ld_markup}</script>',
-        "status": "publish"
+        "status": "publish",
+        "categories": categories  # Add this line to set categories
     }
 
     if featured_image_url:
